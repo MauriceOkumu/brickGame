@@ -65,19 +65,33 @@ def break_bricks():
         bat_rect[0] = pos_x
 
         # Ball hitting the bat
-        if screen.get_width() >= ball_rect[0] >= bat_rect[0] and \
-            ball_rect[1] >= bat_rect[1] - ball_rect.height and \
+        if bat_rect[0] + bat_rect.width >= ball_rect[0] >= bat_rect[0] and \
+            ball_rect[1] + ball_rect.height >= bat_rect[1] and \
             sy > 0:
             sy *= -1
+            sx *= 1.01
+            sy *= 1.01
             continue
         # Top
+        delete_brick = None
+        for b in bricks:
+            bx, by = b
+            if bx <= ball_rect[0] <= bx + brick_rect.width and \
+                by <= ball_rect[1] <= by + brick_rect.height:
+                delete_brick = b
+
+        if delete_brick is not None:
+            bricks.remove(delete_brick)
+
         if ball_rect[1] <= 0:
             ball_rect[1] = 0
             sy *= -1
         # Bottom
         if ball_rect[1] >= screen.get_height() - ball_rect.height:
-            ball_rect[1] = screen.get_height() - ball_rect.height
-            sy *= -1
+            # ball_rect[1] = screen.get_height() - ball_rect.height
+            # sy *= -1
+            ball_rect.topleft = ball_start
+            ball_served = False
         # Left
         if ball_rect[0] <= 0:
             ball_rect[0] = 0
